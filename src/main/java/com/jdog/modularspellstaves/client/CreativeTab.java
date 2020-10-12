@@ -1,7 +1,7 @@
 package jdog.modularspellstaves.client;
 
-import jdog.modularspellstaves.ModularSpellStaves;
 import jdog.modularspellstaves.init.ModItems;
+import jdog.modularspellstaves.ModularSpellStaves;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

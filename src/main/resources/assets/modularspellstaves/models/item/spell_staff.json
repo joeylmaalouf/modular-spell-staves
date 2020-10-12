@@ -2,5 +2,27 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "modularspellstaves:items/spell_staff"
+  },
+  "display": {
+    "thirdperson_lefthand": {
+      "rotation": [ 30, -90, -45 ],
+      "translation": [ 0, 3, 3 ],
+      "scale": [ 1.5, 1.5, 1 ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [ 30, 90, 45 ],
+      "translation": [ 0, 3, 3 ],
+      "scale": [ 1.5, 1.5, 1 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 30, -90, 0 ],
+      "translation": [ 1, 4, 0 ],
+      "scale": [ 1.25, 1.25, 1 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 30, 90, 0 ],
+      "translation": [ 1, 4, 0 ],
+      "scale": [ 1.25, 1.25, 1 ]
+    }
   }
 }

@@ -1,7 +1,7 @@
 package jdog.modularspellstaves.client;
 
-import jdog.modularspellstaves.ModularSpellStaves;
 import jdog.modularspellstaves.init.ModItems;
+import jdog.modularspellstaves.ModularSpellStaves;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -17,7 +17,14 @@ public class ClientRegistrationHandler {
 
   @SubscribeEvent
   public static void registerModels(ModelRegistryEvent event) {
-    registerModel(ModItems.SPELL_STAFF, 0);
+		registerModel(ModItems.SPELL_STAFF, 0);
+
+		registerModel(ModItems.RUNE_SELF, 0);
+
+		registerModel(ModItems.RUNE_HEAL, 0);
+		registerModel(ModItems.RUNE_HARM, 0);
+
+		registerModel(ModItems.RUNE_EMPOWER, 0);
   }
 
   private static void registerModel(Item item, int meta) {

@@ -6,14 +6,17 @@
     "S  "
   ],
   "key": {
-    "S": {
-      "item": "minecraft:stick"
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
     },
     "G": {
-      "item": "minecraft:gold_ingot"
+      "type": "forge:ore_dict",
+      "ore": "ingotGold"
     },
-    "D": {
-      "item": "minecraft:diamond"
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
     }
   },
   "result": {
