@@ -1,6 +1,7 @@
 package jdog.modularspellstaves.util;
 
 import jdog.modularspellstaves.item.ItemRune;
+import jdog.modularspellstaves.item.ItemSpellStaff;
 import jdog.modularspellstaves.ModularSpellStaves;
 
 import net.minecraft.item.Item;
@@ -15,7 +16,7 @@ public class RegistrationHandler {
   @SubscribeEvent
   public static void registerItems(Register<Item> event) {
     final Item[] items = {
-      createItem(new Item(), "spell_staff"),
+      createItem(new ItemSpellStaff(), "spell_staff"),
 
       createItem(new ItemRune("target", "self"), "rune_self"),
 
