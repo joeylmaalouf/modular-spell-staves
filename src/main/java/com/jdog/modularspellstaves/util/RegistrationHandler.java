@@ -18,12 +18,12 @@ public class RegistrationHandler {
     final Item[] items = {
       createItem(new ItemSpellStaff(), "spell_staff"),
 
-      createItem(new ItemRune("target", "self"), "rune_self"),
+      createRune(new ItemRune("target", "self")),
 
-      createItem(new ItemRune("effect", "heal"), "rune_heal"),
-      createItem(new ItemRune("effect", "harm"), "rune_harm"),
+      createRune(new ItemRune("effect", "heal")),
+      createRune(new ItemRune("effect", "harm")),
 
-      createItem(new ItemRune("modifier", "empower"), "rune_empower")
+      createRune(new ItemRune("modifier", "empower"))
     };
 
     event.getRegistry().registerAll(items);
@@ -35,6 +35,10 @@ public class RegistrationHandler {
       .setTranslationKey(ModularSpellStaves.MODID + "." + name)
       .setCreativeTab(ModularSpellStaves.CREATIVE_TAB)
       .setMaxStackSize(1);
+  }
+
+  public static Item createRune(Item item) {
+    return createItem(item, "rune_" + ((ItemRune)item).getType());
   }
 
 }

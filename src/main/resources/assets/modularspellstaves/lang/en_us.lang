@@ -1,9 +1,19 @@
 # Creative Tabs
+
 itemGroup.modularspellstaves=Modular Spell Staves
 
+
 # Items
+
 item.modularspellstaves.spell_staff.name=Spell Staff
+
 item.modularspellstaves.rune_self.name=Target Rune: Self
+item.modularspellstaves.rune_self.description=Targets the caster
+
 item.modularspellstaves.rune_heal.name=Effect Rune: Heal
+item.modularspellstaves.rune_heal.description=Heals the target(s)
 item.modularspellstaves.rune_harm.name=Effect Rune: Harm
+item.modularspellstaves.rune_harm.description=Harms the target(s)
+
 item.modularspellstaves.rune_empower.name=Modifier Rune: Empower
+item.modularspellstaves.rune_empower.description=Increases spell values

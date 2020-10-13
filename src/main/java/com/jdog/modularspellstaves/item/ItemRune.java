@@ -11,10 +11,15 @@ public class ItemRune extends Item {
 
   private String category;
   private String type;
+  private String description;
 
   public ItemRune(String category, String type) {
     this.category = category;
     this.type = type;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public String getCategory() {
@@ -31,7 +36,7 @@ public class ItemRune extends Item {
 
   @Override
   public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-    tooltip.add("TODO: get shortdesc for " + this.getTypeForDisplay() + " rune");
+    tooltip.add(this.description);
   }
 
 }

@@ -32,7 +32,7 @@ public class ItemSpellStaff extends Item {
         EnumHand runeHand = staffHand == EnumHand.MAIN_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
         ItemStack runeStack = player.getHeldItem(runeHand);
         Item rune = runeStack.getItem();
-        if (rune instanceof ItemRune && canInsertRune(staffNbt, rune)) {
+        if (rune instanceof ItemRune && canInsertRune(staffRuneList, (ItemRune)rune)) {
           staffRuneList.appendTag(runeStack.serializeNBT());
           runeStack.setCount(0);
           player.inventory.markDirty();
@@ -59,10 +59,21 @@ public class ItemSpellStaff extends Item {
     return new ActionResult<ItemStack>(result, staffStack);
   }
 
-  public static boolean canInsertRune(NBTTagCompound staffNbt, Item rune) {
-    // TODO: check to make sure we aren't adding a duplicate rune,
-    // and also make sure we aren't adding more than one target rune
-    return true;
+  public static boolean canInsertRune(NBTTagList staffRuneList, ItemRune newRune) {
+    boolean isDuplicateType = false;
+    boolean isAdditionalTarget = false;
+    for (int i = 0; i < staffRuneList.tagCount(); ++i) {
+      ItemRune rune = (ItemRune)(new ItemStack(staffRuneList.getCompoundTagAt(i)).getItem());
+      if (newRune.getType().equals(rune.getType())) {
+        isDuplicateType = true;
+        break;
+      }
+      if (newRune.getCategory().equals("target") && rune.getCategory().equals("target")) {
+        isAdditionalTarget = true;
+        break;
+      }
+    }
+    return !isDuplicateType && !isAdditionalTarget;
   }
 
   @Override
