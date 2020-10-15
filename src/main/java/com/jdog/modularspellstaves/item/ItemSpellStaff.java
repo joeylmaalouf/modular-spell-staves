@@ -25,32 +25,39 @@ public class ItemSpellStaff extends Item {
     EnumActionResult result = EnumActionResult.PASS;
 
     ItemStack staffStack = player.getHeldItem(staffHand);
-    if (!world.isRemote) {
-      NBTTagCompound staffNbt = staffStack.hasTagCompound() ? staffStack.getTagCompound() : new NBTTagCompound();
-      NBTTagList staffRuneList = staffNbt.hasKey("runes") ? staffNbt.getTagList("runes", NBT.TAG_COMPOUND) : new NBTTagList();
+    NBTTagCompound staffNbt = staffStack.hasTagCompound() ? staffStack.getTagCompound() : new NBTTagCompound();
+    NBTTagList staffRuneList = staffNbt.hasKey("runes") ? staffNbt.getTagList("runes", NBT.TAG_COMPOUND) : new NBTTagList();
 
-      if (player.isSneaking()) {
-        EnumHand runeHand = staffHand == EnumHand.MAIN_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
-        ItemStack runeStack = player.getHeldItem(runeHand);
-        Item rune = runeStack.getItem();
-        if (rune instanceof ItemRune && canInsertRune(staffRuneList, (ItemRune)rune)) {
+    if (player.isSneaking()) {
+      EnumHand runeHand = staffHand == EnumHand.MAIN_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
+      ItemStack runeStack = player.getHeldItem(runeHand);
+      Item rune = runeStack.getItem();
+      if (rune instanceof ItemRune && canInsertRune(staffRuneList, (ItemRune)rune)) {
+        player.swingArm(runeHand);
+        if (!world.isRemote) {
           staffRuneList.appendTag(runeStack.serializeNBT());
           runeStack.setCount(0);
           player.inventory.markDirty();
-          result = EnumActionResult.SUCCESS;
         }
-        else if (runeStack.isEmpty() && staffRuneList.tagCount() > 0) {
+        result = EnumActionResult.SUCCESS;
+      }
+      else if (runeStack.isEmpty() && staffRuneList.tagCount() > 0) {
+        player.swingArm(runeHand);
+        if (!world.isRemote) {
           int maxIndex = staffRuneList.tagCount() - 1;
           NBTTagCompound removedRune = staffRuneList.getCompoundTagAt(maxIndex);
           staffRuneList.removeTag(maxIndex);
           player.setHeldItem(runeHand, new ItemStack(removedRune));
           player.inventory.markDirty();
-          result = EnumActionResult.SUCCESS;
         }
-        staffNbt.setTag("runes", staffRuneList);
-        staffStack.setTagCompound(staffNbt);
+        result = EnumActionResult.SUCCESS;
       }
-      else if (canCastSpell(staffRuneList)) {
+      staffNbt.setTag("runes", staffRuneList);
+      staffStack.setTagCompound(staffNbt);
+    }
+    else if (canCastSpell(staffRuneList)) {
+      player.swingArm(staffHand);
+      if (!world.isRemote) {
         ItemRune targetRune = null;
         List<ItemRune> effectRunes = new ArrayList<ItemRune>();
         List<ItemRune> modifierRunes = new ArrayList<ItemRune>();
@@ -69,8 +76,8 @@ public class ItemSpellStaff extends Item {
           }
         }
         SpellUtil.cast(targetRune, effectRunes, modifierRunes, player);
-        result = EnumActionResult.SUCCESS;
       }
+      result = EnumActionResult.SUCCESS;
     }
 
     return new ActionResult<ItemStack>(result, staffStack);

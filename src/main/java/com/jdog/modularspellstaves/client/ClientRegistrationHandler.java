@@ -19,14 +19,15 @@ public class ClientRegistrationHandler {
 
   @SubscribeEvent
   public static void registerModels(ModelRegistryEvent event) {
-		registerModel(ModItems.SPELL_STAFF, 0);
+    registerModel(ModItems.SPELL_STAFF, 0);
 
-		registerModelAndDescription(ModItems.RUNE_SELF, 0);
+    registerModelAndDescription(ModItems.RUNE_SELF, 0);
 
-		registerModelAndDescription(ModItems.RUNE_HEAL, 0);
-		registerModelAndDescription(ModItems.RUNE_HARM, 0);
+    registerModelAndDescription(ModItems.RUNE_HEAL, 0);
+    registerModelAndDescription(ModItems.RUNE_HARM, 0);
 
-		registerModelAndDescription(ModItems.RUNE_EMPOWER, 0);
+    registerModelAndDescription(ModItems.RUNE_EMPOWER, 0);
+    registerModelAndDescription(ModItems.RUNE_INHIBIT, 0);
   }
 
   private static void registerModel(Item item, int meta) {

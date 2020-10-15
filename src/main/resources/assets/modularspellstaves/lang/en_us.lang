@@ -16,4 +16,6 @@ item.modularspellstaves.rune_harm.name=Effect Rune: Harm
 item.modularspellstaves.rune_harm.description=Harms the target(s)
 
 item.modularspellstaves.rune_empower.name=Modifier Rune: Empower
-item.modularspellstaves.rune_empower.description=Increases spell values
+item.modularspellstaves.rune_empower.description=Increases spell potency
+item.modularspellstaves.rune_inhibit.name=Modifier Rune: Inhibit
+item.modularspellstaves.rune_inhibit.description=Decreases spell potency

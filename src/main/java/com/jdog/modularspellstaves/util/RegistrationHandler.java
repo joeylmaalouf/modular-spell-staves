@@ -23,7 +23,8 @@ public class RegistrationHandler {
       createRune(new ItemRune("effect", "heal")),
       createRune(new ItemRune("effect", "harm")),
 
-      createRune(new ItemRune("modifier", "empower"))
+      createRune(new ItemRune("modifier", "empower")),
+      createRune(new ItemRune("modifier", "inhibit"))
     };
 
     event.getRegistry().registerAll(items);
