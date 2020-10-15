@@ -1,6 +1,7 @@
 package jdog.modularspellstaves.item;
 
 import jdog.modularspellstaves.item.ItemRune;
+import jdog.modularspellstaves.util.SpellUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +44,32 @@ public class ItemSpellStaff extends Item {
           NBTTagCompound removedRune = staffRuneList.getCompoundTagAt(maxIndex);
           staffRuneList.removeTag(maxIndex);
           player.setHeldItem(runeHand, new ItemStack(removedRune));
+          player.inventory.markDirty();
           result = EnumActionResult.SUCCESS;
         }
         staffNbt.setTag("runes", staffRuneList);
         staffStack.setTagCompound(staffNbt);
       }
-      else {
-        // TODO: if (can cast based on rune combo (1 target, 1+ effects, 0+ modifiers) and mana amount) {
-          // cast spell (for each effect, apply any modifiers to their values, then apply those effects to the target)
-          // set result to success
-        // }
+      else if (canCastSpell(staffRuneList)) {
+        ItemRune targetRune = null;
+        List<ItemRune> effectRunes = new ArrayList<ItemRune>();
+        List<ItemRune> modifierRunes = new ArrayList<ItemRune>();
+        for (int i = 0; i < staffRuneList.tagCount(); ++i) {
+          ItemRune rune = (ItemRune)(new ItemStack(staffRuneList.getCompoundTagAt(i)).getItem());
+          switch (rune.getCategory()) {
+            case "target":
+              targetRune = rune;
+              break;
+            case "effect":
+              effectRunes.add(rune);
+              break;
+            case "modifier":
+              modifierRunes.add(rune);
+              break;
+          }
+        }
+        SpellUtil.cast(targetRune, effectRunes, modifierRunes, player);
+        result = EnumActionResult.SUCCESS;
       }
     }
 
@@ -74,6 +91,23 @@ public class ItemSpellStaff extends Item {
       }
     }
     return !isDuplicateType && !isAdditionalTarget;
+  }
+
+  public static boolean canCastSpell(NBTTagList staffRuneList) {
+    boolean hasTarget = false;
+    boolean hasEffect = false;
+    for (int i = 0; i < staffRuneList.tagCount(); ++i) {
+      ItemRune rune = (ItemRune)(new ItemStack(staffRuneList.getCompoundTagAt(i)).getItem());
+      switch (rune.getCategory()) {
+        case "target":
+          hasTarget = true;
+          break;
+        case "effect":
+          hasEffect = true;
+          break;
+      }
+    }
+    return hasTarget && hasEffect;
   }
 
   @Override
