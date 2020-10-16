@@ -19,5 +19,7 @@ public class ModItems {
 
   public static final Item RUNE_EMPOWER = null;
   public static final Item RUNE_INHIBIT = null;
+  public static final Item RUNE_ENLARGE = null;
+  public static final Item RUNE_REDUCE = null;
 
 }

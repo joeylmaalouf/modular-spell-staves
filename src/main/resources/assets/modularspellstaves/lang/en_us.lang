@@ -21,3 +21,7 @@ item.modularspellstaves.rune_empower.name=Modifier Rune: Empower
 item.modularspellstaves.rune_empower.description=Increases spell potency
 item.modularspellstaves.rune_inhibit.name=Modifier Rune: Inhibit
 item.modularspellstaves.rune_inhibit.description=Decreases spell potency
+item.modularspellstaves.rune_enlarge.name=Modifier Rune: Enlarge
+item.modularspellstaves.rune_enlarge.description=Increases spell range
+item.modularspellstaves.rune_reduce.name=Modifier Rune: Reduce
+item.modularspellstaves.rune_reduce.description=Decreases spell range

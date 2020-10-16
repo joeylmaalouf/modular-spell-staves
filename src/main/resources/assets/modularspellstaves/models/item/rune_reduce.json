@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "modularspellstaves:items/rune",
+    "layer1": "modularspellstaves:items/symbol_reduce"
+  }
+}

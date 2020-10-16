@@ -37,6 +37,7 @@ public class SpellUtil {
   private static HashMap<String, Float> getModifiers(List<ItemRune> modifierRunes) {
     HashMap<String, Float> modifiers = new HashMap<String, Float>();
     modifiers.put("potencyMultiplier", 1.0f);
+    modifiers.put("rangeMultiplier", 1.0f);
 
     for (ItemRune modifierRune : modifierRunes) {
       switch (modifierRune.getType()) {
@@ -45,6 +46,12 @@ public class SpellUtil {
           break;
         case "inhibit":
           modifiers.put("potencyMultiplier", modifiers.get("potencyMultiplier") * 0.5f);
+          break;
+        case "enlarge":
+          modifiers.put("rangeMultiplier", modifiers.get("rangeMultiplier") * 2.0f);
+          break;
+        case "reduce":
+          modifiers.put("rangeMultiplier", modifiers.get("rangeMultiplier") * 0.5f);
           break;
       }
     }
@@ -60,7 +67,8 @@ public class SpellUtil {
         targets.add(player);
         break;
       case "touch":
-        Entity target = RayTrace.findEntityWithinReach(player);
+        double range = player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+        Entity target = RayTrace.findEntityWithinRange(player, (double)(range * modifiers.get("rangeMultiplier")));
         if (target != null && target instanceof EntityLivingBase) {
           targets.add((EntityLivingBase)target);
         }

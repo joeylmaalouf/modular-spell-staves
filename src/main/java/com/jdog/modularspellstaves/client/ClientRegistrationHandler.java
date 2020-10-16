@@ -29,6 +29,8 @@ public class ClientRegistrationHandler {
 
     registerModelAndDescription(ModItems.RUNE_EMPOWER, 0);
     registerModelAndDescription(ModItems.RUNE_INHIBIT, 0);
+    registerModelAndDescription(ModItems.RUNE_ENLARGE, 0);
+    registerModelAndDescription(ModItems.RUNE_REDUCE, 0);
   }
 
   private static void registerModel(Item item, int meta) {
