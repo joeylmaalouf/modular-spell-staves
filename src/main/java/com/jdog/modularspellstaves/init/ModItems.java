@@ -12,6 +12,7 @@ public class ModItems {
   public static final Item SPELL_STAFF = null;
 
   public static final Item RUNE_SELF = null;
+  public static final Item RUNE_TOUCH = null;
 
   public static final Item RUNE_HEAL = null;
   public static final Item RUNE_HARM = null;

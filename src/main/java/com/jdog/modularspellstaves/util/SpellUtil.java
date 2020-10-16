@@ -1,10 +1,12 @@
 package jdog.modularspellstaves.util;
 
 import jdog.modularspellstaves.item.ItemRune;
+import jdog.modularspellstaves.math.RayTrace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
@@ -12,7 +14,7 @@ import net.minecraft.util.DamageSource;
 
 public class SpellUtil {
 
-  public static void cast(ItemRune targetRune, List<ItemRune> effectRunes, List<ItemRune> modifierRunes, EntityPlayer player) {
+  public static boolean cast(ItemRune targetRune, List<ItemRune> effectRunes, List<ItemRune> modifierRunes, EntityPlayer player) {
     HashMap<String, Float> modifiers = getModifiers(modifierRunes);
     List<EntityLivingBase> targets = getTargets(targetRune, modifiers, player);
 
@@ -28,6 +30,8 @@ public class SpellUtil {
         }
       }
     }
+
+    return targets.size() != 0;
   }
 
   private static HashMap<String, Float> getModifiers(List<ItemRune> modifierRunes) {
@@ -54,6 +58,12 @@ public class SpellUtil {
     switch (targetRune.getType()) {
       case "self":
         targets.add(player);
+        break;
+      case "touch":
+        Entity target = RayTrace.findEntityWithinReach(player);
+        if (target != null && target instanceof EntityLivingBase) {
+          targets.add((EntityLivingBase)target);
+        }
         break;
     }
 

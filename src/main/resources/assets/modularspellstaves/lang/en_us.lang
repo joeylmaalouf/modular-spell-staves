@@ -9,6 +9,8 @@ item.modularspellstaves.spell_staff.name=Spell Staff
 
 item.modularspellstaves.rune_self.name=Target Rune: Self
 item.modularspellstaves.rune_self.description=Targets the caster
+item.modularspellstaves.rune_touch.name=Target Rune: Touch
+item.modularspellstaves.rune_touch.description=Targets an entity within reach
 
 item.modularspellstaves.rune_heal.name=Effect Rune: Heal
 item.modularspellstaves.rune_heal.description=Heals the target(s)

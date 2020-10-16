@@ -19,6 +19,7 @@ public class RegistrationHandler {
       createItem(new ItemSpellStaff(), "spell_staff"),
 
       createRune(new ItemRune("target", "self")),
+      createRune(new ItemRune("target", "touch")),
 
       createRune(new ItemRune("effect", "heal")),
       createRune(new ItemRune("effect", "harm")),

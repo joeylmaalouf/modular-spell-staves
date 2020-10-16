@@ -22,6 +22,7 @@ public class ClientRegistrationHandler {
     registerModel(ModItems.SPELL_STAFF, 0);
 
     registerModelAndDescription(ModItems.RUNE_SELF, 0);
+    registerModelAndDescription(ModItems.RUNE_TOUCH, 0);
 
     registerModelAndDescription(ModItems.RUNE_HEAL, 0);
     registerModelAndDescription(ModItems.RUNE_HARM, 0);

@@ -5,6 +5,7 @@ import jdog.modularspellstaves.util.SpellUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,11 +15,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 
 public class ItemSpellStaff extends Item {
+
+  private Random rand;
 
   @Override
   public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand staffHand) {
@@ -75,15 +80,16 @@ public class ItemSpellStaff extends Item {
               break;
           }
         }
-        SpellUtil.cast(targetRune, effectRunes, modifierRunes, player);
+        boolean success = SpellUtil.cast(targetRune, effectRunes, modifierRunes, player);
       }
+      spawnSpellParticles(world, player);
       result = EnumActionResult.SUCCESS;
     }
 
     return new ActionResult<ItemStack>(result, staffStack);
   }
 
-  public static boolean canInsertRune(NBTTagList staffRuneList, ItemRune newRune) {
+  private static boolean canInsertRune(NBTTagList staffRuneList, ItemRune newRune) {
     boolean isDuplicateType = false;
     boolean isAdditionalTarget = false;
     for (int i = 0; i < staffRuneList.tagCount(); ++i) {
@@ -100,7 +106,7 @@ public class ItemSpellStaff extends Item {
     return !isDuplicateType && !isAdditionalTarget;
   }
 
-  public static boolean canCastSpell(NBTTagList staffRuneList) {
+  private static boolean canCastSpell(NBTTagList staffRuneList) {
     boolean hasTarget = false;
     boolean hasEffect = false;
     for (int i = 0; i < staffRuneList.tagCount(); ++i) {
@@ -115,6 +121,19 @@ public class ItemSpellStaff extends Item {
       }
     }
     return hasTarget && hasEffect;
+  }
+
+  private void spawnSpellParticles(World world, EntityPlayer player) {
+    BlockPos position = player.getPosition();
+    if (this.rand == null) {
+      this.rand = new Random();
+    }
+    for (int i = 0; i < 8; ++i) {
+      double x = position.getX() + (this.rand.nextDouble() - 0.5d) * (double)player.width;
+      double y = position.getY() + this.rand.nextDouble() * (double)player.height;
+      double z = position.getZ() + (this.rand.nextDouble() - 0.5d) * (double)player.width;
+      world.spawnParticle(EnumParticleTypes.SPELL_INSTANT, x, y, z, this.rand.nextDouble(), this.rand.nextDouble(), this.rand.nextDouble());
+    }
   }
 
   @Override
