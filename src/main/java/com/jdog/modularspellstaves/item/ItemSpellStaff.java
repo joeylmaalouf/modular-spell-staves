@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class ItemSpellStaff extends Item {
 
   private Random rand;
+  private Integer cooldown;
 
   @Override
   public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand staffHand) {
@@ -37,7 +39,7 @@ public class ItemSpellStaff extends Item {
       EnumHand runeHand = staffHand == EnumHand.MAIN_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
       ItemStack runeStack = player.getHeldItem(runeHand);
       Item rune = runeStack.getItem();
-      if (rune instanceof ItemRune && canInsertRune(staffRuneList, (ItemRune)rune)) {
+      if (rune instanceof ItemRune && this.canInsertRune(staffRuneList, (ItemRune)rune)) {
         player.swingArm(runeHand);
         if (!world.isRemote) {
           staffRuneList.appendTag(runeStack.serializeNBT());
@@ -60,7 +62,7 @@ public class ItemSpellStaff extends Item {
       staffNbt.setTag("runes", staffRuneList);
       staffStack.setTagCompound(staffNbt);
     }
-    else if (canCastSpell(staffRuneList)) {
+    else if (this.canCastSpell(staffRuneList)) {
       player.swingArm(staffHand);
       if (!world.isRemote) {
         ItemRune targetRune = null;
@@ -80,16 +82,18 @@ public class ItemSpellStaff extends Item {
               break;
           }
         }
-        boolean success = SpellUtil.cast(targetRune, effectRunes, modifierRunes, player);
+        if (SpellUtil.cast(targetRune, effectRunes, modifierRunes, player)) {
+          this.cooldown = 60;
+          result = EnumActionResult.SUCCESS;
+        }
       }
-      spawnSpellParticles(world, player);
-      result = EnumActionResult.SUCCESS;
+      this.spawnSpellParticles(world, player);
     }
 
     return new ActionResult<ItemStack>(result, staffStack);
   }
 
-  private static boolean canInsertRune(NBTTagList staffRuneList, ItemRune newRune) {
+  private boolean canInsertRune(NBTTagList staffRuneList, ItemRune newRune) {
     boolean isDuplicateType = false;
     boolean isAdditionalTarget = false;
     for (int i = 0; i < staffRuneList.tagCount(); ++i) {
@@ -106,7 +110,8 @@ public class ItemSpellStaff extends Item {
     return !isDuplicateType && !isAdditionalTarget;
   }
 
-  private static boolean canCastSpell(NBTTagList staffRuneList) {
+  private boolean canCastSpell(NBTTagList staffRuneList) {
+    boolean offCooldown = (this.cooldown == 0 || this.cooldown == null);
     boolean hasTarget = false;
     boolean hasEffect = false;
     for (int i = 0; i < staffRuneList.tagCount(); ++i) {
@@ -120,7 +125,7 @@ public class ItemSpellStaff extends Item {
           break;
       }
     }
-    return hasTarget && hasEffect;
+    return offCooldown && hasTarget && hasEffect;
   }
 
   private void spawnSpellParticles(World world, EntityPlayer player) {
@@ -133,6 +138,16 @@ public class ItemSpellStaff extends Item {
       double y = position.getY() + this.rand.nextDouble() * (double)player.height;
       double z = position.getZ() + (this.rand.nextDouble() - 0.5d) * (double)player.width;
       world.spawnParticle(EnumParticleTypes.SPELL_INSTANT, x, y, z, this.rand.nextDouble(), this.rand.nextDouble(), this.rand.nextDouble());
+    }
+  }
+
+  @Override
+  public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+    if (this.cooldown == null) {
+      this.cooldown = 0;
+    }
+    else if (this.cooldown > 0) {
+      --this.cooldown;
     }
   }
 
