@@ -23,6 +23,8 @@ public class RegistrationHandler {
 
       createRune(new ItemRune("effect", "heal")),
       createRune(new ItemRune("effect", "harm")),
+      createRune(new ItemRune("effect", "speed")),
+      createRune(new ItemRune("effect", "resistance")),
 
       createRune(new ItemRune("modifier", "empower")),
       createRune(new ItemRune("modifier", "inhibit")),

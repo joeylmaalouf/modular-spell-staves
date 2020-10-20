@@ -16,6 +16,8 @@ public class ModItems {
 
   public static final Item RUNE_HEAL = null;
   public static final Item RUNE_HARM = null;
+  public static final Item RUNE_SPEED = null;
+  public static final Item RUNE_RESISTANCE = null;
 
   public static final Item RUNE_EMPOWER = null;
   public static final Item RUNE_INHIBIT = null;

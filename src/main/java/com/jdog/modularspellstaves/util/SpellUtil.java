@@ -9,6 +9,8 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 
 
@@ -26,6 +28,12 @@ public class SpellUtil {
             break;
           case "harm":
             target.attackEntityFrom(DamageSource.causePlayerDamage(player), 2.0f * modifiers.get("potencyMultiplier"));
+            break;
+          case "speed":
+            target.addPotionEffect(new PotionEffect(MobEffects.SPEED, 3600, modifiers.get("potencyMultiplier").intValue()));
+            break;
+          case "resistance":
+            target.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 3600, modifiers.get("potencyMultiplier").intValue()));
             break;
         }
       }

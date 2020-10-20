@@ -26,6 +26,8 @@ public class ClientRegistrationHandler {
 
     registerModelAndDescription(ModItems.RUNE_HEAL, 0);
     registerModelAndDescription(ModItems.RUNE_HARM, 0);
+    registerModelAndDescription(ModItems.RUNE_SPEED, 0);
+    registerModelAndDescription(ModItems.RUNE_RESISTANCE, 0);
 
     registerModelAndDescription(ModItems.RUNE_EMPOWER, 0);
     registerModelAndDescription(ModItems.RUNE_INHIBIT, 0);

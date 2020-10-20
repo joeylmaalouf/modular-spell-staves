@@ -16,6 +16,10 @@ item.modularspellstaves.rune_heal.name=Effect Rune: Heal
 item.modularspellstaves.rune_heal.description=Heals the target(s)
 item.modularspellstaves.rune_harm.name=Effect Rune: Harm
 item.modularspellstaves.rune_harm.description=Harms the target(s)
+item.modularspellstaves.rune_speed.name=Effect Rune: Speed
+item.modularspellstaves.rune_speed.description=Speeds up the target(s)
+item.modularspellstaves.rune_resistance.name=Effect Rune: Resistance
+item.modularspellstaves.rune_resistance.description=Fortifies the target(s)
 
 item.modularspellstaves.rune_empower.name=Modifier Rune: Empower
 item.modularspellstaves.rune_empower.description=Increases spell potency
