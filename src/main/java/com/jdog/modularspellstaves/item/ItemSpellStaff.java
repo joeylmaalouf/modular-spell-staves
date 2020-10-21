@@ -40,16 +40,15 @@ public class ItemSpellStaff extends Item {
       ItemStack runeStack = player.getHeldItem(runeHand);
       Item rune = runeStack.getItem();
       if (rune instanceof ItemRune && this.canInsertRune(staffRuneList, (ItemRune)rune)) {
-        player.swingArm(runeHand);
         if (!world.isRemote) {
           staffRuneList.appendTag(runeStack.serializeNBT());
           runeStack.setCount(0);
           player.inventory.markDirty();
         }
+        player.swingArm(runeHand);
         result = EnumActionResult.SUCCESS;
       }
       else if (runeStack.isEmpty() && staffRuneList.tagCount() > 0) {
-        player.swingArm(runeHand);
         if (!world.isRemote) {
           int maxIndex = staffRuneList.tagCount() - 1;
           NBTTagCompound removedRune = staffRuneList.getCompoundTagAt(maxIndex);
@@ -57,37 +56,39 @@ public class ItemSpellStaff extends Item {
           player.setHeldItem(runeHand, new ItemStack(removedRune));
           player.inventory.markDirty();
         }
+        player.swingArm(runeHand);
         result = EnumActionResult.SUCCESS;
       }
       staffNbt.setTag("runes", staffRuneList);
       staffStack.setTagCompound(staffNbt);
     }
     else if (this.canCastSpell(staffRuneList)) {
-      player.swingArm(staffHand);
-      if (!world.isRemote) {
-        ItemRune targetRune = null;
-        List<ItemRune> effectRunes = new ArrayList<ItemRune>();
-        List<ItemRune> modifierRunes = new ArrayList<ItemRune>();
-        for (int i = 0; i < staffRuneList.tagCount(); ++i) {
-          ItemRune rune = (ItemRune)(new ItemStack(staffRuneList.getCompoundTagAt(i)).getItem());
-          switch (rune.getCategory()) {
-            case "target":
-              targetRune = rune;
-              break;
-            case "effect":
-              effectRunes.add(rune);
-              break;
-            case "modifier":
-              modifierRunes.add(rune);
-              break;
-          }
-        }
-        if (SpellUtil.cast(targetRune, effectRunes, modifierRunes, player)) {
-          this.cooldown = 60;
-          result = EnumActionResult.SUCCESS;
+      ItemRune targetRune = null;
+      List<ItemRune> effectRunes = new ArrayList<ItemRune>();
+      List<ItemRune> modifierRunes = new ArrayList<ItemRune>();
+      for (int i = 0; i < staffRuneList.tagCount(); ++i) {
+        ItemRune rune = (ItemRune)(new ItemStack(staffRuneList.getCompoundTagAt(i)).getItem());
+        switch (rune.getCategory()) {
+          case "target":
+            targetRune = rune;
+            break;
+          case "effect":
+            effectRunes.add(rune);
+            break;
+          case "modifier":
+            modifierRunes.add(rune);
+            break;
         }
       }
-      this.spawnSpellParticles(world, player);
+      if (SpellUtil.validTargetsExist(targetRune, modifierRunes, player)) {
+        if (!world.isRemote) {
+          SpellUtil.castSpell(targetRune, effectRunes, modifierRunes, player);
+          this.cooldown = 60;
+        }
+        this.spawnSpellParticles(world, player);
+        player.swingArm(staffHand);
+        result = EnumActionResult.SUCCESS;
+      }
     }
 
     return new ActionResult<ItemStack>(result, staffStack);
