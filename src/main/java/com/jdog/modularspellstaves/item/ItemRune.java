@@ -11,11 +11,13 @@ public class ItemRune extends Item {
 
   private String category;
   private String type;
+  private int manaCost;
   private String description;
 
-  public ItemRune(String category, String type) {
+  public ItemRune(String category, String type, int manaCost) {
     this.category = category;
     this.type = type;
+    this.manaCost = manaCost;
   }
 
   public void setDescription(String description) {
@@ -32,6 +34,10 @@ public class ItemRune extends Item {
 
   public String getTypeForDisplay() {
     return this.type.substring(0, 1).toUpperCase() + this.type.substring(1).toLowerCase();
+  }
+
+  public int getManaCost() {
+    return this.manaCost;
   }
 
   @Override

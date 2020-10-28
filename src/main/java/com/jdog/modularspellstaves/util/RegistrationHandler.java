@@ -18,18 +18,18 @@ public class RegistrationHandler {
     final Item[] items = {
       createItem(new ItemSpellStaff(), "spell_staff"),
 
-      createRune(new ItemRune("target", "self")),
-      createRune(new ItemRune("target", "touch")),
+      createRune(new ItemRune("target", "self", 5)),
+      createRune(new ItemRune("target", "touch", 10)),
 
-      createRune(new ItemRune("effect", "heal")),
-      createRune(new ItemRune("effect", "harm")),
-      createRune(new ItemRune("effect", "speed")),
-      createRune(new ItemRune("effect", "resistance")),
+      createRune(new ItemRune("effect", "heal", 10)),
+      createRune(new ItemRune("effect", "harm", 10)),
+      createRune(new ItemRune("effect", "speed", 5)),
+      createRune(new ItemRune("effect", "resistance", 5)),
 
-      createRune(new ItemRune("modifier", "empower")),
-      createRune(new ItemRune("modifier", "inhibit")),
-      createRune(new ItemRune("modifier", "enlarge")),
-      createRune(new ItemRune("modifier", "reduce"))
+      createRune(new ItemRune("modifier", "empower", 5)),
+      createRune(new ItemRune("modifier", "inhibit", -5)),
+      createRune(new ItemRune("modifier", "enlarge", 5)),
+      createRune(new ItemRune("modifier", "reduce", -5))
     };
 
     event.getRegistry().registerAll(items);

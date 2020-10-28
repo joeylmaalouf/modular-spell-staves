@@ -3,6 +3,7 @@ package jdog.modularspellstaves.item;
 import jdog.modularspellstaves.item.ItemRune;
 import jdog.modularspellstaves.util.SpellUtil;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,22 +25,32 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemSpellStaff extends Item {
 
+  private static final int COOLDOWN = 40;
+  private static final int MAX_MANA = 200;
+
   private Random rand;
-  private Integer cooldown;
+
+  public ItemSpellStaff() {
+    super();
+    this.rand = new Random();
+  }
 
   @Override
   public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand staffHand) {
     EnumActionResult result = EnumActionResult.PASS;
 
     ItemStack staffStack = player.getHeldItem(staffHand);
-    NBTTagCompound staffNbt = staffStack.hasTagCompound() ? staffStack.getTagCompound() : new NBTTagCompound();
+    if (!staffStack.hasTagCompound()) {
+      staffStack = initializeStaffNBT(staffStack);
+    }
+    NBTTagCompound staffNbt = staffStack.getTagCompound();
     NBTTagList staffRuneList = staffNbt.hasKey("runes") ? staffNbt.getTagList("runes", NBT.TAG_COMPOUND) : new NBTTagList();
 
     if (player.isSneaking()) {
       EnumHand runeHand = staffHand == EnumHand.MAIN_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
       ItemStack runeStack = player.getHeldItem(runeHand);
       Item rune = runeStack.getItem();
-      if (rune instanceof ItemRune && this.canInsertRune(staffRuneList, (ItemRune)rune)) {
+      if (rune instanceof ItemRune && canInsertRune(staffRuneList, (ItemRune)rune)) {
         if (!world.isRemote) {
           staffRuneList.appendTag(runeStack.serializeNBT());
           runeStack.setCount(0);
@@ -62,7 +73,7 @@ public class ItemSpellStaff extends Item {
       staffNbt.setTag("runes", staffRuneList);
       staffStack.setTagCompound(staffNbt);
     }
-    else if (this.canCastSpell(staffRuneList)) {
+    else if (canCastSpell(world.getTotalWorldTime() - staffNbt.getLong("lastUsed"), staffNbt.getInteger("mana"), staffRuneList)) {
       ItemRune targetRune = null;
       List<ItemRune> effectRunes = new ArrayList<ItemRune>();
       List<ItemRune> modifierRunes = new ArrayList<ItemRune>();
@@ -83,9 +94,10 @@ public class ItemSpellStaff extends Item {
       if (SpellUtil.validTargetsExist(targetRune, modifierRunes, player)) {
         if (!world.isRemote) {
           SpellUtil.castSpell(targetRune, effectRunes, modifierRunes, player);
-          this.cooldown = 60;
+          staffNbt.setLong("lastUsed", world.getTotalWorldTime());
+          staffNbt.setInteger("mana", staffNbt.getInteger("mana") - getManaCost(staffRuneList));
         }
-        this.spawnSpellParticles(world, player);
+        spawnSpellParticles(world, player, this.rand);
         player.swingArm(staffHand);
         result = EnumActionResult.SUCCESS;
       }
@@ -94,7 +106,15 @@ public class ItemSpellStaff extends Item {
     return new ActionResult<ItemStack>(result, staffStack);
   }
 
-  private boolean canInsertRune(NBTTagList staffRuneList, ItemRune newRune) {
+  private static ItemStack initializeStaffNBT(ItemStack stack) {
+    NBTTagCompound nbt = new NBTTagCompound();
+    nbt.setLong("lastUsed", 0);
+    nbt.setInteger("mana", MAX_MANA);
+    stack.setTagCompound(nbt);
+    return stack;
+  }
+
+  private static boolean canInsertRune(NBTTagList staffRuneList, ItemRune newRune) {
     boolean isDuplicateType = false;
     boolean isAdditionalTarget = false;
     for (int i = 0; i < staffRuneList.tagCount(); ++i) {
@@ -111,8 +131,9 @@ public class ItemSpellStaff extends Item {
     return !isDuplicateType && !isAdditionalTarget;
   }
 
-  private boolean canCastSpell(NBTTagList staffRuneList) {
-    boolean offCooldown = (this.cooldown == 0 || this.cooldown == null);
+  private static boolean canCastSpell(long ticksSinceUsed, int mana, NBTTagList staffRuneList) {
+    boolean offCooldown = ticksSinceUsed >= COOLDOWN;
+    boolean hasMana = mana >= getManaCost(staffRuneList);
     boolean hasTarget = false;
     boolean hasEffect = false;
     for (int i = 0; i < staffRuneList.tagCount(); ++i) {
@@ -126,30 +147,64 @@ public class ItemSpellStaff extends Item {
           break;
       }
     }
-    return offCooldown && hasTarget && hasEffect;
+    return offCooldown && hasMana && hasTarget && hasEffect;
   }
 
-  private void spawnSpellParticles(World world, EntityPlayer player) {
-    BlockPos position = player.getPosition();
-    if (this.rand == null) {
-      this.rand = new Random();
+  private static int getManaCost(NBTTagList staffRuneList) {
+    boolean targetsSelf = false;
+    int totalCost = 0;
+    for (int i = 0; i < staffRuneList.tagCount(); ++i) {
+      ItemRune rune = (ItemRune)(new ItemStack(staffRuneList.getCompoundTagAt(i)).getItem());
+      if (rune.getType().equals("self")) {
+        targetsSelf = true;
+        break;
+      }
     }
+    for (int i = 0; i < staffRuneList.tagCount(); ++i) {
+      ItemRune rune = (ItemRune)(new ItemStack(staffRuneList.getCompoundTagAt(i)).getItem());
+      if (!targetsSelf || (!rune.getType().equals("enlarge") && !rune.getType().equals("reduce"))) {
+        totalCost += rune.getManaCost();
+      }
+    }
+    return Math.max(totalCost, 1);
+  }
+
+  private static void spawnSpellParticles(World world, EntityPlayer player, Random rand) {
+    BlockPos position = player.getPosition();
     for (int i = 0; i < 8; ++i) {
-      double x = position.getX() + (this.rand.nextDouble() - 0.5d) * (double)player.width;
-      double y = position.getY() + this.rand.nextDouble() * (double)player.height;
-      double z = position.getZ() + (this.rand.nextDouble() - 0.5d) * (double)player.width;
-      world.spawnParticle(EnumParticleTypes.SPELL_INSTANT, x, y, z, this.rand.nextDouble(), this.rand.nextDouble(), this.rand.nextDouble());
+      double x = position.getX() + (rand.nextDouble() - 0.5d) * (double)player.width;
+      double y = position.getY() + rand.nextDouble() * (double)player.height;
+      double z = position.getZ() + (rand.nextDouble() - 0.5d) * (double)player.width;
+      world.spawnParticle(EnumParticleTypes.SPELL_INSTANT, x, y, z, rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
     }
   }
 
   @Override
   public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-    if (this.cooldown == null) {
-      this.cooldown = 0;
+    if (stack.hasTagCompound()) {
+      NBTTagCompound nbt = stack.getTagCompound();
+      if (nbt.getInteger("mana") < MAX_MANA && this.rand.nextInt(1200) == 0) {
+        nbt.setInteger("mana", nbt.getInteger("mana") + 1);
+      }
     }
-    else if (this.cooldown > 0) {
-      --this.cooldown;
+  }
+
+  @Override
+  public boolean showDurabilityBar(ItemStack stack) {
+    int durability = MAX_MANA;
+    if (stack.hasTagCompound()) {
+      durability = stack.getTagCompound().getInteger("mana");
     }
+    return durability != MAX_MANA;
+  }
+
+  @Override
+  public double getDurabilityForDisplay(ItemStack stack) {
+    int damage = 0;
+    if (stack.hasTagCompound()) {
+      damage = MAX_MANA - stack.getTagCompound().getInteger("mana");
+    }
+    return (double)damage / (double)MAX_MANA;
   }
 
   @Override
@@ -166,6 +221,7 @@ public class ItemSpellStaff extends Item {
           tooltip.add("Rune" + (runeNames.size() > 1 ? "s" : "") + ": " + String.join(", ", runeNames));
         }
       }
+      tooltip.add("Mana: " + nbt.getInteger("mana") + "/" + MAX_MANA);
     }
   }
 
