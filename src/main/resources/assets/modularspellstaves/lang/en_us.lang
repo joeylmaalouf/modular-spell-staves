@@ -20,6 +20,8 @@ item.modularspellstaves.rune_speed.name=Effect Rune: Speed
 item.modularspellstaves.rune_speed.description=Speeds up the target(s)
 item.modularspellstaves.rune_resistance.name=Effect Rune: Resistance
 item.modularspellstaves.rune_resistance.description=Fortifies the target(s)
+item.modularspellstaves.rune_fire.name=Effect Rune: Fire
+item.modularspellstaves.rune_fire.description=Burns the target(s)
 
 item.modularspellstaves.rune_empower.name=Modifier Rune: Empower
 item.modularspellstaves.rune_empower.description=Increases spell potency

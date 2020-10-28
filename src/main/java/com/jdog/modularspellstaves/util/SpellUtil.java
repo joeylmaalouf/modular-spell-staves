@@ -81,16 +81,19 @@ public class SpellUtil {
   private static void applyEffect(String effect, EntityLivingBase target, HashMap<String, Float> modifiers, EntityPlayer player) {
     switch (effect) {
       case "heal":
-        target.heal(2.0f * modifiers.get("potencyMultiplier"));
+        target.heal(4.0f * modifiers.get("potencyMultiplier"));
         break;
       case "harm":
-        target.attackEntityFrom(DamageSource.causePlayerDamage(player), 2.0f * modifiers.get("potencyMultiplier"));
+        target.attackEntityFrom(DamageSource.causePlayerDamage(player), 4.0f * modifiers.get("potencyMultiplier"));
         break;
       case "speed":
         target.addPotionEffect(new PotionEffect(MobEffects.SPEED, 3600, modifiers.get("potencyMultiplier").intValue()));
         break;
       case "resistance":
         target.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 3600, modifiers.get("potencyMultiplier").intValue()));
+        break;
+      case "fire":
+        target.setFire((int)(8 * modifiers.get("potencyMultiplier")));
         break;
     }
   }
