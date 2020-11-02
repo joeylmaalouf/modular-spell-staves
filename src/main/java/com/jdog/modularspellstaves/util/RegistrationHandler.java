@@ -26,6 +26,8 @@ public class RegistrationHandler {
       createRune(new ItemRune("effect", "speed", 5)),
       createRune(new ItemRune("effect", "resistance", 5)),
       createRune(new ItemRune("effect", "fire", 5)),
+      createRune(new ItemRune("effect", "jump", 5)),
+      createRune(new ItemRune("effect", "glide", 5)),
 
       createRune(new ItemRune("modifier", "empower", 5)),
       createRune(new ItemRune("modifier", "inhibit", -5)),

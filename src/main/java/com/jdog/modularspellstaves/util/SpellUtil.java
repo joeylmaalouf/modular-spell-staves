@@ -2,7 +2,9 @@ package jdog.modularspellstaves.util;
 
 import jdog.modularspellstaves.item.ItemRune;
 import jdog.modularspellstaves.math.RayTrace;
+import jdog.modularspellstaves.potion.PotionSlowFall;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +96,14 @@ public class SpellUtil {
         break;
       case "fire":
         target.setFire((int)(8 * modifiers.get("potencyMultiplier")));
+        break;
+      case "jump":
+        target.motionY += Math.pow((double)(1 + modifiers.get("potencyMultiplier").intValue()), 0.75d);
+        target.isAirBorne = true;
+        target.velocityChanged = true;
+        break;
+      case "glide":
+        target.addPotionEffect(new PotionEffect(new PotionSlowFall(), 3600, modifiers.get("potencyMultiplier").intValue()));
         break;
     }
   }

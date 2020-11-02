@@ -22,6 +22,10 @@ item.modularspellstaves.rune_resistance.name=Effect Rune: Resistance
 item.modularspellstaves.rune_resistance.description=Fortifies the target(s)
 item.modularspellstaves.rune_fire.name=Effect Rune: Fire
 item.modularspellstaves.rune_fire.description=Burns the target(s)
+item.modularspellstaves.rune_jump.name=Effect Rune: Jump
+item.modularspellstaves.rune_jump.description=Makes the target(s) jump
+item.modularspellstaves.rune_glide.name=Effect Rune: Glide
+item.modularspellstaves.rune_glide.description=Makes the target(s) fall more slowly
 
 item.modularspellstaves.rune_empower.name=Modifier Rune: Empower
 item.modularspellstaves.rune_empower.description=Increases spell potency
